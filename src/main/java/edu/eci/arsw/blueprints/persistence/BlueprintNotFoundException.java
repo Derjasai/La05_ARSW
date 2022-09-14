@@ -12,6 +12,8 @@ package edu.eci.arsw.blueprints.persistence;
  */
 public class BlueprintNotFoundException extends Exception{
 
+    public static final String NO_AUTOR = "No se encontró un plano con ese autor";
+
     public BlueprintNotFoundException(String message) {
         super(message);
     }

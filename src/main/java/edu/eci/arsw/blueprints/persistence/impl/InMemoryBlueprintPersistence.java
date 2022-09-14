@@ -32,7 +32,7 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         Blueprint bp=new Blueprint("_authorname_", "_bpname_ ",pts);
         blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);
 
-        Point[] pts1=new Point[]{new Point(24, 1),new Point(22, 15)};
+        Point[] pts1=new Point[]{new Point(24, 1),new Point(22, 15),new Point(22, 15),new Point(22, 15)};
         Blueprint bp1=new Blueprint("Daniel", "Plano1",pts1);
         blueprints.put(new Tuple<>(bp1.getAuthor(),bp1.getName()), bp1);
 
@@ -71,7 +71,9 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
                 bp.add(blueprints.get(tuple));
             }
         }
-
+        if(bp.isEmpty()){
+            throw new BlueprintNotFoundException(BlueprintNotFoundException.NO_AUTOR);
+        }
         return bp;
     }
 
