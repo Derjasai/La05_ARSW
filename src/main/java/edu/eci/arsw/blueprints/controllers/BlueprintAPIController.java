@@ -14,15 +14,13 @@ import java.util.logging.Logger;
 import com.google.gson.Gson;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
+import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.services.BlueprintsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -61,22 +59,40 @@ public class BlueprintAPIController {
     public ResponseEntity<?> getBlueprintByAuthorName(@PathVariable String author, @PathVariable String bpname){
         try {
             Gson gson = new Gson();
-            Set<Blueprint> byAuthor = bs.getBlueprintsByAuthor(author);
-            Set<Blueprint> data = new HashSet<>();
-            for (Blueprint bp:byAuthor){
-                if(bpname.equals(bp.getName())){
-                    data.add(bp);
-                }
-            }
-            if(data.isEmpty())return new ResponseEntity<>("EL autor: "+author+" no tiene un plano con el nombre: "+bpname, HttpStatus.NOT_FOUND);
-
+            Blueprint data = bs.getBlueprint(author,bpname);
             return new ResponseEntity<>(gson.toJson(data), HttpStatus.ACCEPTED);
         }catch (BlueprintNotFoundException ex) {
             //Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity<>("El autor: "+author+" no existe, error 404",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("EL autor: "+author+" o el nombre del plano: "+bpname+"No coincide, Error 404",HttpStatus.NOT_FOUND);
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> postBlueprint(@RequestBody Blueprint blueprint){
+        try {
+            bs.addNewBlueprint(blueprint);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (BlueprintPersistenceException | BlueprintNotFoundException ex) {
+            //Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("No se ha logrado registrar",HttpStatus.FORBIDDEN);
+        }
 
+    }
+
+    @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> putBlueprint(@PathVariable String author, @PathVariable String bpname, @RequestBody Blueprint blueprint){
+        Blueprint blueprintNew = null;
+        try {
+            blueprintNew = bs.getBlueprint(author, bpname);
+
+            blueprintNew.setAuthor(blueprint.getAuthor());
+            blueprintNew.setName(blueprint.getName());
+            blueprintNew.setPoints(blueprint.getPoints());
+
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (BlueprintNotFoundException e) {
+            return new ResponseEntity<>("Estamos trabajando para ti",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 
