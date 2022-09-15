@@ -1,0 +1,16 @@
+CONDICIONES DE CARRERA:
+    Se puede presentar cuando accedemos al HashMap que guarda los planos,
+    cuando queremos consultar o editar:
+
+    *Si modificamos un plano al tiempo que se está consultando.
+
+    *Al agregar un nuevo plano y querer consultarlo al tiempo.
+
+REGIONES CRÍTICAS:
+    Debido a que blueprints es una colección que almacena todos los datos
+    y no ser thread-safe puede presentar una condición de carrera.
+
+SOLUCIÓN:
+    Para evitar esto y tener una colección thread-safe, cambiamos el tipo
+    de blueprints, para consultar los planos de manera sincronizada cuando
+    varias personas quieran editar o agregar un plano.

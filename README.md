@@ -2,7 +2,9 @@
 
 ### Arquitecturas de Software
 
-
+### Integrantes
+* Nicole Montaña
+* Daniel Ramos
 
 #### API REST para la gestión de planos.
 
@@ -28,12 +30,12 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 
 3. Configure su aplicación para que ofrezca el recurso "/blueprints", de manera que cuando se le haga una petición GET, retorne -en formato jSON- el conjunto de todos los planos. Para esto:
 
-	* Modifique la clase BlueprintAPIController teniendo en cuenta el siguiente ejemplo de controlador REST hecho con SpringMVC/SpringBoot:
+    * Modifique la clase BlueprintAPIController teniendo en cuenta el siguiente ejemplo de controlador REST hecho con SpringMVC/SpringBoot:
 
-	```java
-	@RestController
-	@RequestMapping(value = "/url-raiz-recurso")
-	public class XXController {
+    ```java
+    @RestController
+    @RequestMapping(value = "/url-raiz-recurso")
+    public class XXController {
     
         
     @RequestMapping(method = RequestMethod.GET)
@@ -45,26 +47,55 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
             Logger.getLogger(XXController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("Error bla bla bla",HttpStatus.NOT_FOUND);
         }        
-	}
+    }
 
-	```
-	* Haga que en esta misma clase se inyecte el bean de tipo BlueprintServices (al cual, a su vez, se le inyectarán sus dependencias de persisntecia y de filtrado de puntos).
+    ```
+    * Haga que en esta misma clase se inyecte el bean de tipo BlueprintServices (al cual, a su vez, se le inyectarán sus dependencias de persisntecia y de filtrado de puntos).
 
-4. Verifique el funcionamiento de a aplicación lanzando la aplicación con maven:
+    Método:
 
-	```bash
-	$ mvn compile
-	$ mvn spring-boot:run
+    ![img.png](img/media/img.png)
+
+5. Verifique el funcionamiento de a aplicación lanzando la aplicación con maven:
+
+    ```bash
+    $ mvn compile
+    $ mvn spring-boot:run
 	
-	```
-	Y luego enviando una petición GET a: http://localhost:8080/blueprints. Rectifique que, como respuesta, se obtenga un objeto jSON con una lista que contenga el detalle de los planos suministados por defecto, y que se haya aplicado el filtrado de puntos correspondiente.
+    ```
+    Y luego enviando una petición GET a: http://localhost:8080/blueprints. Rectifique que, como respuesta, se obtenga un objeto jSON con una lista que contenga el detalle de los planos suministados por defecto, y que se haya aplicado el filtrado de puntos correspondiente.
 
+    Ejecución:
 
-5. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}, el cual retorne usando una representación jSON todos los planos realizados por el autor cuyo nombre sea {author}. Si no existe dicho autor, se debe responder con el código de error HTTP 404. Para esto, revise en [la documentación de Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html), sección 22.3.2, el uso de @PathVariable. De nuevo, verifique que al hacer una petición GET -por ejemplo- a recurso http://localhost:8080/blueprints/juan, se obtenga en formato jSON el conjunto de planos asociados al autor 'juan' (ajuste esto a los nombres de autor usados en el punto 2).
+    ![img.png](img/media/img0.png)
 
-6. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}/{bpname}, el cual retorne usando una representación jSON sólo UN plano, en este caso el realizado por {author} y cuyo nombre sea {bpname}. De nuevo, si no existe dicho autor, se debe responder con el código de error HTTP 404. 
+    Respuesta petición:
 
+    ![img.png](img/media/img1.png)
 
+6. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}, el cual retorne usando una representación jSON todos los planos realizados por el autor cuyo nombre sea {author}. Si no existe dicho autor, se debe responder con el código de error HTTP 404. Para esto, revise en [la documentación de Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html), sección 22.3.2, el uso de @PathVariable. De nuevo, verifique que al hacer una petición GET -por ejemplo- a recurso http://localhost:8080/blueprints/juan, se obtenga en formato jSON el conjunto de planos asociados al autor 'juan' (ajuste esto a los nombres de autor usados en el punto 2).
+
+    Método:    
+
+    ![img.png](img/media/img2.png)
+
+    Consulta de planos (Daniel):
+    
+    ![img.png](img/media/img3.png)
+
+7. Modifique el controlador para que ahora, acepte peticiones GET al recurso /blueprints/{author}/{bpname}, el cual retorne usando una representación jSON sólo UN plano, en este caso el realizado por {author} y cuyo nombre sea {bpname}. De nuevo, si no existe dicho autor, se debe responder con el código de error HTTP 404. 
+
+    Método:
+
+    ![img.png](img/media/img4.png)
+
+   Consulta de planos (Nicole, Plano2):
+
+    ![img.png](img/media/img5.png)
+
+    Respuesta incorrecta:
+
+    ![img.png](img/media/img6.png)
 
 ### Parte II
 
@@ -84,6 +115,9 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 	}
 	```	
 
+Método:
+
+ ![img.png](img/media/img7.png)
 
 2.  Para probar que el recurso ‘planos’ acepta e interpreta
     correctamente las peticiones POST, use el comando curl de Unix. Este
@@ -101,11 +135,27 @@ Del anterior diagrama de componentes (de alto nivel), se desprendió el siguient
 
 	Nota: puede basarse en el formato jSON mostrado en el navegador al consultar una orden con el método GET.
 
+![img.png](img/media/img8.png)
 
 3. Teniendo en cuenta el autor y numbre del plano registrado, verifique que el mismo se pueda obtener mediante una petición GET al recurso '/blueprints/{author}/{bpname}' correspondiente.
 
-4. Agregue soporte al verbo PUT para los recursos de la forma '/blueprints/{author}/{bpname}', de manera que sea posible actualizar un plano determinado.
+    GET:
 
+    ![img.png](img/media/img12.png)
+
+5. Agregue soporte al verbo PUT para los recursos de la forma '/blueprints/{author}/{bpname}', de manera que sea posible actualizar un plano determinado.
+
+    Método:
+
+    ![img.png](img/media/img9.png)
+
+    PUT:
+
+    ![img.png](img/media/img10.png)
+
+    Resultado actualizado:
+
+    ![img.png](img/media/img11.png)
 
 ### Parte III
 
@@ -117,6 +167,13 @@ El componente BlueprintsRESTAPI funcionará en un entorno concurrente. Es decir,
 Ajuste el código para suprimir las condiciones de carrera. Tengan en cuenta que simplemente sincronizar el acceso a las operaciones de persistencia/consulta DEGRADARÁ SIGNIFICATIVAMENTE el desempeño de API, por lo cual se deben buscar estrategias alternativas.
 
 Escriba su análisis y la solución aplicada en el archivo ANALISIS_CONCURRENCIA.txt
+
+![img.png](img/media/img13.png)
+
+Cambio en el codigo:
+
+![img.png](img/media/img14.png)
+    
 
 #### Criterios de evaluación
 
